@@ -110,7 +110,7 @@ def create_browser_engine(config: dict) -> BrowserEngine:
         )
     elif engine_type == "selenium":
         from aio_monitor.browser.selenium_engine import SeleniumEngine
-        se_config = config.get("playwright", {})  # Reuse playwright viewport settings
+        se_config = config.get("selenium", config.get("playwright", {}))  # Fall back to playwright settings if no selenium section
         return SeleniumEngine(
             headless=se_config.get("headless", True),
             viewport_width=se_config.get("viewport_width", 1280),

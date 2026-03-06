@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html as html_mod
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -240,7 +241,7 @@ class ReportGenerator:
         if summary.top_cited_domains:
             rows = []
             for domain, count in list(summary.top_cited_domains.items())[:20]:
-                rows.append(f"<tr><td>{domain}</td><td>{count}</td></tr>")
+                rows.append(f"<tr><td>{html_mod.escape(domain)}</td><td>{count}</td></tr>")
             top_domains_html = (
                 "<table><tr><th>Domain</th><th>Citations</th></tr>"
                 + "".join(rows)
@@ -262,24 +263,27 @@ class ReportGenerator:
                 if r.target_domain_cited
                 else '<span class="badge badge-na">—</span>'
             )
-            domains_str = ", ".join(r.cited_domains[:5])
+            domains_str = ", ".join(
+                html_mod.escape(d) for d in r.cited_domains[:5]
+            )
             if len(r.cited_domains) > 5:
                 domains_str += f" (+{len(r.cited_domains) - 5} more)"
 
             screenshot_cell = (
-                f'<a class="screenshot-link" href="{r.screenshot_path}">View</a>'
+                f'<a class="screenshot-link" href="{html_mod.escape(r.screenshot_path)}">View</a>'
                 if r.screenshot_path
                 else "—"
             )
-            status_class = f"status-{r.run_status}"
+            escaped_status = html_mod.escape(r.run_status)
+            status_class = f"status-{escaped_status}"
             detail_rows.append(
                 f"<tr>"
-                f"<td>{r.keyword}</td>"
+                f"<td>{html_mod.escape(r.keyword)}</td>"
                 f"<td>{ai_badge}</td>"
                 f"<td>{target_badge}</td>"
                 f"<td>{domains_str or '—'}</td>"
                 f"<td>{screenshot_cell}</td>"
-                f'<td class="{status_class}">{r.run_status}</td>'
+                f'<td class="{status_class}">{escaped_status}</td>'
                 f"</tr>"
             )
         detailed_results_html = (
@@ -295,7 +299,9 @@ class ReportGenerator:
         failed = [r for r in summary.results if r.run_status == RunStatus.FAILED.value]
         if failed:
             failed_items = "".join(
-                f"<li><strong>{r.keyword}</strong>: {r.notes}</li>" for r in failed
+                f"<li><strong>{html_mod.escape(r.keyword)}</strong>: "
+                f"{html_mod.escape(r.notes)}</li>"
+                for r in failed
             )
             failed_checks_html = f"<ul>{failed_items}</ul>"
         else:
