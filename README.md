@@ -24,15 +24,15 @@ Google Search Console API
 ## Modules (repositories)
 
 - **Module 1: GSC Data Manager**
-  - Repo: <PASTE_REPO_URL>
+  - Repo: [advanced-gsc-data-manager](https://github.com/sbaselice1/advanced-gsc-data-manager)
   - Purpose: Pulls GSC data and loads it to BigQuery (scheduled + backfill patterns)
 
 - **Module 2: GSC Monitor**
-  - Repo: <PASTE_REPO_URL>
+  - Repo: [gsc-data-pull-monitor-r8](https://github.com/sbaselice1/gsc-data-pull-monitor-r8)
   - Purpose: Observability for ingestion runs (success/fail, latency, freshness)
 
 - **Module 3: SEO Dashboard**
-  - Repo: <PASTE_REPO_URL>
+  - Repo: [relevate-seo-aio-dashboard](https://github.com/sbaselice1/relevate-seo-aio-dashboard)
   - Purpose: Streamlit analytics dashboard powered by BigQuery
 
 ## Key capabilities
@@ -48,9 +48,18 @@ Google Search Console API
 - Streamlit (UIs)
 
 ## Screenshots
-- Monitoring UI: ![Monitor](assets/monitor.png)
-- Dashboard UI: ![Dashboard](assets/dashboard.png)
-- Example BigQuery tables: ![BigQuery](assets/bigquery.png)
+
+### Monitoring UI
+![Monitor](assets/monitor.png)
+
+### Dashboard UI
+![Dashboard](assets/dashboard.png)
+
+### BigQuery Data (Domain Breakdown)
+![BigQuery](assets/bigquery.png)
+
+### Pipeline Logs & Job Status
+![Logs](assets/logs.png)
 
 ## How to run (high level)
 See:
