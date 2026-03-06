@@ -1,0 +1,62 @@
+# AI Overview Monitor Configuration
+# Copy this to config.yaml and customize for your environment
+
+# Path to keyword list (one keyword per line)
+keywords_file: "aio_monitor/config/keywords.txt"
+
+# Target domains to check for in AI Overview citations
+target_domains:
+  - "example.com"
+  - "www.example.com"
+
+# Browser engine: "openclaw" (default) or "playwright"
+browser_engine: "openclaw"
+
+# OpenClaw settings (used when browser_engine is "openclaw")
+openclaw:
+  browser_profile: "openclaw"
+  # Path to openclaw CLI binary (leave empty to use PATH)
+  cli_path: ""
+  # Timeout in seconds for each browser action
+  action_timeout: 30
+
+# Playwright settings (used when browser_engine is "playwright")
+playwright:
+  headless: true
+  viewport_width: 1280
+  viewport_height: 900
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+
+# Output paths
+output:
+  # Base directory for all output (screenshots, reports, db)
+  base_dir: "output"
+  # Screenshots subdirectory (dated folders created automatically)
+  screenshots_dir: "screenshots"
+  # Reports subdirectory
+  reports_dir: "reports"
+  # SQLite database filename
+  db_name: "aio_monitor.db"
+
+# Search settings
+search:
+  # Delay between keyword searches (seconds) to avoid rate limiting
+  delay_between_searches: 5
+  # Max retries per keyword on failure
+  max_retries: 2
+  # Timeout for page load (seconds)
+  page_load_timeout: 30
+  # Google domain to search
+  google_domain: "https://www.google.com"
+  # Search parameters
+  search_params:
+    hl: "en"
+    gl: "us"
+
+# Logging
+logging:
+  level: "INFO"
+  # Log file (relative to base_dir)
+  log_file: "aio_monitor.log"
+  # Also log to console
+  console: true
