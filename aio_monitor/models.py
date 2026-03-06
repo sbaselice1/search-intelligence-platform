@@ -50,7 +50,7 @@ class KeywordResult:
         return cls(
             keyword=row["keyword"],
             checked_at=row.get("checked_at", ""),
-            ai_overview_present=row.get("ai_overview_present"),
+            ai_overview_present=bool(row["ai_overview_present"]) if row.get("ai_overview_present") is not None else None,
             cited_domains=cited,
             target_domain_cited=bool(row.get("target_domain_cited", False)),
             screenshot_path=row.get("screenshot_path", ""),

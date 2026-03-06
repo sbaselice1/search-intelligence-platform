@@ -151,22 +151,53 @@ class SerpChecker:
         return False, ""
 
     async def _extract_citations_from_source(self, page_source: str) -> list[str]:
-        """Extract cited domains from page HTML source using regex."""
-        domains: list[str] = []
+        """Extract cited domains from AI Overview containers in page source.
 
-        # Look for links within AI Overview-like containers
-        # This is a best-effort extraction from raw HTML
-        # Pattern: href="https://domain.com/..." within relevant containers
-        href_pattern = re.compile(
-            r'href="(https?://[^"]+)"',
-            re.IGNORECASE,
+        Uses BeautifulSoup to isolate AI Overview container HTML first,
+        then extracts href links only from those sections.  Falls back to
+        an empty list if no container can be identified.
+        """
+        try:
+            from bs4 import BeautifulSoup
+        except ImportError:
+            logger.warning(
+                "beautifulsoup4 not installed — cannot scope citation "
+                "extraction to AI Overview container. Returning empty list."
+            )
+            return []
+
+        soup = BeautifulSoup(page_source, "html.parser")
+
+        # Attempt to isolate AI Overview container(s) using known markers
+        container_queries = [
+            {"attrs": {"data-sgrd": True}},
+            {"attrs": {"data-md": True}},
+            {"class_": "M8OgIe"},
+            {"class_": "kp-wholepage"},
+            {"class_": "LLtSOc"},
+            {"class_": "PkOFod"},
+        ]
+
+        container_html_parts: list[str] = []
+        for query in container_queries:
+            for tag in soup.find_all(**query):
+                container_html_parts.append(str(tag))
+
+        if not container_html_parts:
+            # No AI Overview container found — return empty rather than
+            # extracting from the whole page
+            return []
+
+        # Parse only the container HTML for href links
+        container_soup = BeautifulSoup(
+            "\n".join(container_html_parts), "html.parser"
         )
 
-        # Find all hrefs in the page
-        all_hrefs = href_pattern.findall(page_source)
-
-        # Filter to likely citation links (not Google internal links)
-        for href in all_hrefs:
+        domains: list[str] = []
+        for a_tag in container_soup.find_all("a", href=True):
+            href = a_tag["href"]
+            if not href.startswith("http"):
+                continue
             domain = extract_domain(href)
             if domain and not self._is_google_internal(domain):
                 if domain not in domains:
