@@ -123,15 +123,25 @@ class SQLiteStore(StorageBackend):
             return None
         return KeywordResult.from_row(dict(row))
 
-    def export_csv(self, output_path: str, date_str: Optional[str] = None) -> str:
-        """Export results to a CSV file."""
-        if date_str:
-            results = self.get_results_by_date(date_str)
-        else:
-            cursor = self.conn.execute(
-                "SELECT * FROM keyword_results ORDER BY checked_at DESC"
-            )
-            results = [KeywordResult.from_row(dict(row)) for row in cursor.fetchall()]
+    def export_csv(
+        self,
+        output_path: str,
+        date_str: Optional[str] = None,
+        results: Optional[list[KeywordResult]] = None,
+    ) -> str:
+        """Export results to a CSV file.
+
+        If *results* is provided, write those directly (avoids date-mismatch
+        when using --date override).  Otherwise fall back to querying the DB.
+        """
+        if results is None:
+            if date_str:
+                results = self.get_results_by_date(date_str)
+            else:
+                cursor = self.conn.execute(
+                    "SELECT * FROM keyword_results ORDER BY checked_at DESC"
+                )
+                results = [KeywordResult.from_row(dict(row)) for row in cursor.fetchall()]
 
         output = Path(output_path)
         output.parent.mkdir(parents=True, exist_ok=True)

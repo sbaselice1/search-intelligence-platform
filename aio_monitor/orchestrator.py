@@ -204,9 +204,10 @@ async def run_daily_check(
         storage.save_results(results)
         logger.info("Results saved to database")
 
-        # Export CSV
+        # Export CSV — pass results directly to avoid date-mismatch
+        # when using --date override (checked_at uses actual UTC time)
         csv_path = str(reports_dir / f"results_{date_str}.csv")
-        storage.export_csv(csv_path, date_str)
+        storage.export_csv(csv_path, results=results)
 
     except Exception as e:
         logger.error("Fatal error during monitoring run: %s", e, exc_info=True)

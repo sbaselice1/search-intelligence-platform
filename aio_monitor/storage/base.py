@@ -41,8 +41,17 @@ class StorageBackend(ABC):
         ...
 
     @abstractmethod
-    def export_csv(self, output_path: str, date_str: Optional[str] = None) -> str:
-        """Export results to CSV. Returns the path written."""
+    def export_csv(
+        self,
+        output_path: str,
+        date_str: Optional[str] = None,
+        results: Optional[list[KeywordResult]] = None,
+    ) -> str:
+        """Export results to CSV. Returns the path written.
+
+        If *results* is provided, write those directly instead of querying
+        the database (avoids date-mismatch when using --date override).
+        """
         ...
 
     @abstractmethod
