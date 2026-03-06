@@ -1,0 +1,8 @@
+# Keywords to monitor for AI Overviews
+# One keyword per line. Lines starting with # are ignored.
+# Example keywords below — replace with your own.
+best project management software
+how to improve website speed
+what is semantic SEO
+top CRM tools for small business
+how to reduce bounce rate
